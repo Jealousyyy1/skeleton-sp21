@@ -113,7 +113,19 @@ public class Model extends Observable {
         // TODO: Modify this.board (and perhaps this.score) to account
         // for the tilt to the Side SIDE. If the board changed, set the
         // changed local variable to true.
-
+        int size = board.size();
+        if (side == Side.NORTH) {
+            int[][] allValues = new int[size][size];
+            for (int col = 0; col < size; col++) {
+                int[] colValues = new int[size];
+                for (int row = 0; row < size; row++) {
+                    if (board.tile(col, row) != null) {
+                        colValues[row] = board.tile(col, row).value();
+                    }
+                }
+                allValues[col] = colValues;
+            }
+        }
         checkGameOver();
         if (changed) {
             setChanged();
@@ -153,7 +165,6 @@ public class Model extends Observable {
      * given a Tile object t, we get its value with t.value().
      */
     public static boolean maxTileExists(Board b) {
-        // TODO: Fill in this function.
         for (int col = 0; col < b.size(); col++) {
             for (int row = 0; row < b.size(); row++) {
                 if (b.tile(col, row) != null) {
@@ -172,9 +183,33 @@ public class Model extends Observable {
      * 1. There is at least one empty space on the board.
      * 2. There are two adjacent tiles with the same value.
      */
-    public static boolean atLeastOneMoveExists(Board b) {
-
+    public static boolean twoAdjacentSame(Board b) {
+        int n = b.size();
+        for (int col = 0; col < n; col++) {
+            for (int row = 0; row < n; row++) {
+                if (b.tile(col, row) == null) {
+                    continue;
+                }
+                int curVal = b.tile(col, row).value();
+                if (col + 1 < n) {
+                    if (b.tile(col + 1, row) != null && curVal == b.tile(col + 1, row).value()) {
+                        return true;
+                    }
+                }
+                if (row + 1 < n) {
+                    if (b.tile(col, row + 1) != null && curVal == b.tile(col, row + 1).value()) {
+                        return true;
+                    }
+                }
+            }
+        }
         return false;
+    }
+
+    public static boolean atLeastOneMoveExists(Board b) {
+        if (emptySpaceExists(b)) {
+            return true;
+        } else return twoAdjacentSame(b);
     }
 
 
