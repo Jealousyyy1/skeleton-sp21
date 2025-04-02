@@ -52,7 +52,7 @@ public class Tile {
      *  (COL, ROW). */
     public Tile merge(int col, int row, Tile otherTile) {
         assert value == otherTile.value();
-        next = otherTile.next = new Tile(2 * value, col, row);
+        next = otherTile.next = new Tile(2 * value, col, row); // 2 tiles have the same next state
         return next;
     }
 
