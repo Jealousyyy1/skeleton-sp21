@@ -106,6 +106,27 @@ public class Model extends Observable {
      *    value, then the leading two tiles in the direction of motion merge,
      *    and the trailing tile does not.
      * */
+    public static int numberNonZero(int[] column) {
+        int number = 0;
+        for (int element : column) {
+            if (element != 0) {
+                number = number + 1;
+            }
+        }
+        return number;
+    }
+
+    // TODO: method getting the number of same pairs. (using while loop, iterate backwards, decrease by 2 if same, else decrease by 1.)
+    public static int samePairs(int[] column) {
+        int pairs = 0;
+        int pointer = column.length;
+        int elements = numberNonZero(column);
+        while () {
+
+        }
+        return pairs;
+    }
+
     public boolean tilt(Side side) {
         boolean changed;
         changed = false;
@@ -113,39 +134,13 @@ public class Model extends Observable {
         // TODO: Modify this.board (and perhaps this.score) to account
         // for the tilt to the Side SIDE. If the board changed, set the
         // changed local variable to true.
-        int size = board.size();
-        if (side == Side.NORTH) {
-            // get all the values (only applicable for UP and DOWN)
-            int[][] allValues = new int[size][size]; // setdefault to 0
-            for (int col = 0; col < size; col++) {
-                int[] colValues = new int[size];
-                for (int row = 0; row < size; row++) {
-                    if (board.tile(col, row) != null) {
-                        colValues[row] = board.tile(col, row).value();
-                    }
-                }
-                allValues[col] = colValues;
-            }
-            for (int col = 0; col < size; col++) {
-                for (int row = size; row >= 0; row--) {
-                    if (allValues[col][row] == 0) {
-                        continue;
-                    } else { // 这一格不为null
-                        boolean hasSameVal = false;  // 讨论有相同元素的情况
-                        int terminateRow = -1;
-                        for (int newRow = row; newRow >= 0; newRow--) {
-                            if (allValues[col][newRow] == allValues[col][row]) {
-                                hasSameVal = true;
-                                terminateRow = newRow;
-                                break;
-                            }
-                        }
-                        allValues[col][row] = allValues[col][row] * 2;
-                        allValues[col][terminateRow] = 0;
-                    }
-                }
-            }
-        }
+//        if (side == Side.NORTH) {
+//
+//        } else {
+//            board.setViewingPerspective(side);
+//            this.tilt(Side.NORTH);
+//            board.setViewingPerspective(Side.NORTH);
+//        }
         checkGameOver();
         if (changed) {
             setChanged();
