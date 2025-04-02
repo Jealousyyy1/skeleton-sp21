@@ -115,7 +115,8 @@ public class Model extends Observable {
         // changed local variable to true.
         int size = board.size();
         if (side == Side.NORTH) {
-            int[][] allValues = new int[size][size];
+            // get all the values (only applicable for UP and DOWN)
+            int[][] allValues = new int[size][size]; // setdefault to 0
             for (int col = 0; col < size; col++) {
                 int[] colValues = new int[size];
                 for (int row = 0; row < size; row++) {
@@ -124,6 +125,25 @@ public class Model extends Observable {
                     }
                 }
                 allValues[col] = colValues;
+            }
+            for (int col = 0; col < size; col++) {
+                for (int row = size; row >= 0; row--) {
+                    if (allValues[col][row] == 0) {
+                        continue;
+                    } else { // 这一格不为null
+                        boolean hasSameVal = false;  // 讨论有相同元素的情况
+                        int terminateRow = -1;
+                        for (int newRow = row; newRow >= 0; newRow--) {
+                            if (allValues[col][newRow] == allValues[col][row]) {
+                                hasSameVal = true;
+                                terminateRow = newRow;
+                                break;
+                            }
+                        }
+                        allValues[col][row] = allValues[col][row] * 2;
+                        allValues[col][terminateRow] = 0;
+                    }
+                }
             }
         }
         checkGameOver();
