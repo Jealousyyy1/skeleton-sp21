@@ -129,11 +129,18 @@ public class Model extends Observable {
             }
         }
         int[] pairs_idx = new int[len];
-        while (pointer >= len - numberNonZero(column)) {
+        while (pointer >= len - numberNonZero(column) && pointer > 0) {
             if (newArr[pointer] == newArr[pointer - 1]) {
-                pairs_idx[pairs] = pointer;
-                pairs = pairs + 1;
-                pointer = pointer - 2;
+                if (pairs > 0 && pairs_idx[pairs - 1] == pointer + 2){
+                    pairs_idx[pairs] = pointer + 1;
+                    pairs = pairs + 1;
+                    pointer = pointer - 2;
+                } else {
+                    pairs_idx[pairs] = pointer;
+                    pairs = pairs + 1;
+                    pointer = pointer - 2;
+                }
+
             } else {
                 pointer = pointer - 1;
             }
@@ -163,7 +170,7 @@ public class Model extends Observable {
                 if (colVal[right] == 0) {
                     if (sameAdjPairs(colVal)[pair] == right) {
                         int i = 0;
-                        while (i < 2 && left >= 0) {
+                        while (i < 2) {
                             if (colVal[left] != 0) {
                                 Tile t = board.tile(col, left);
                                 board.move(col, right, t);
@@ -171,12 +178,12 @@ public class Model extends Observable {
                                 changed = true;
                                 left = left - 1;
                                 i = i + 1;
-                                pair = pair + 1;
                                 this.score = this.score + t.value();
                             } else {
                                 left = left - 1;
                             }
                         }
+                        pair = pair + 1;
                         right = right - 1;
                     } else {
                         int i = 0;
@@ -197,23 +204,24 @@ public class Model extends Observable {
                 } else {
                     if (sameAdjPairs(colVal)[pair] == right) {
                         int i = 0;
-                        left = left - 1;
+                        left = left - 1;   // left = 2
                         while (i < 1 && left >= 0) {
                             if (colVal[left] != 0) {
                                 Tile t = board.tile(col, left);
                                 board.move(col, right, t);
-                                colVal[left] = 0;
+                                colVal[left] = 0;  // col[2] == 0
                                 changed = true;
                                 i = i + 1;
-                                left = left - 1;
+                                left = left - 1; // left = 1
                                 pair = pair + 1;
                                 this.score = this.score + t.value() * 2;
                             } else {
                                 left = left - 1;
                             }
                         }
+                    } else {
+                        left = left - 1;
                     }
-                    left = left - 1;
                     right = right - 1;
                 }
             }
