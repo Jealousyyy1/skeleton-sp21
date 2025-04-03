@@ -144,78 +144,81 @@ public class Model extends Observable {
     public boolean tilt(Side side) {
         boolean changed;
         changed = false;
-
-        // TODO: Modify this.board (and perhaps this.score) to account
-        // for the tilt to the Side SIDE. If the board changed, set the
-        // changed local variable to true.
         int size = board.size();
-        if (side == Side.NORTH) {
-            for (int col = 0; col < size; col++) {
-                int[] colVal = new int[size];
-                for (int row = 0; row < size; row++) {
-                    if (board.tile(col, row) == null) {
-                        colVal[row] = 0;
-                    } else {
-                        colVal[row] = board.tile(col, row).value();
-                    }
+        board.setViewingPerspective(side);  // up only
+        for (int col = 0; col < size; col++) {
+            int[] colVal = new int[size];
+            for (int row = 0; row < size; row++) {
+                if (board.tile(col, row) == null) {
+                    colVal[row] = 0;
+                } else {
+                    colVal[row] = board.tile(col, row).value();
                 }
-                int left_ele =  numberNonZero(colVal) - numberNonZero(sameAdjPairs(colVal));
-                if (left_ele < size) {
-                    changed = true;
-                }
-                int pair = 0;
-                int left = size - 1;
-                int right = size - 1;
-                while (right >= left_ele) {
-                    if (colVal[right] == 0) {
-                        if (sameAdjPairs(colVal)[pair] == right) {
-                            int i = 0;
-                            while (i < 2 && left >= 0) {
-                                if (colVal[left] != 0) {
-                                    Tile t = tile(col, left);
-                                    board.move(col, right, t);
-                                    left = left - 1;
-                                    i = i + 1;
-                                    pair = pair + 1;
-                                }
-                            }
-                            this.score = this.score + board.tile(col, right).value();
-                            right = right - 1;
+            }
+            int left_ele =  numberNonZero(colVal) - numberNonZero(sameAdjPairs(colVal));
+            int pair = 0;
+            int left = size - 1;
+            int right = size - 1;
+            while (right >= size - left_ele) {
+                if (colVal[right] == 0) {
+                    if (sameAdjPairs(colVal)[pair] == right) {
+                        int i = 0;
+                        while (i < 2 && left >= 0) {
+                            if (colVal[left] != 0) {
+                                Tile t = board.tile(col, left);
+                                board.move(col, right, t);
+                                colVal[left] = 0;
+                                changed = true;
+                                left = left - 1;
+                                i = i + 1;
+                                pair = pair + 1;
+                                this.score = this.score + t.value();
                             } else {
-                                int i = 0;
-                                while (i < 1 && left >= 0) {
-                                    if (colVal[left] != 0) {
-                                        Tile t = tile(col, left);
-                                        board.move(col, right, t);
-                                        i = i + 1;
-                                        left = left - 1;
-                                    }
-                                }
-                                right = right - 1;
+                                left = left - 1;
                             }
-                        } else {
-                            if (sameAdjPairs(colVal)[pair] == right) {
-                                int i = 0;
-                                while (i < 1 && left >= 0) {
-                                    if (colVal[left] != 0) {
-                                        Tile t = tile(col, left);
-                                        board.move(col, right, t);
-                                        i = i + 1;
-                                        left = left - 1;
-                                        pair = pair + 1;
-                                    }
-                                }
-                                this.score = this.score + board.tile(col, right).value();
+                        }
+                        right = right - 1;
+                    } else {
+                        int i = 0;
+                        while (i < 1 && left >= 0) {
+                            if (colVal[left] != 0) {
+                                Tile t = board.tile(col, left);
+                                board.move(col, right, t);
+                                colVal[left] = 0;
+                                changed = true;
+                                i = i + 1;
+                                left = left - 1;
+                            } else {
+                                left = left - 1;
                             }
+                        }
                         right = right - 1;
                     }
+                } else {
+                    if (sameAdjPairs(colVal)[pair] == right) {
+                        int i = 0;
+                        left = left - 1;
+                        while (i < 1 && left >= 0) {
+                            if (colVal[left] != 0) {
+                                Tile t = board.tile(col, left);
+                                board.move(col, right, t);
+                                colVal[left] = 0;
+                                changed = true;
+                                i = i + 1;
+                                left = left - 1;
+                                pair = pair + 1;
+                                this.score = this.score + t.value() * 2;
+                            } else {
+                                left = left - 1;
+                            }
+                        }
                     }
+                    left = left - 1;
+                    right = right - 1;
                 }
-        } else {
-            board.setViewingPerspective(side);
-            this.tilt(Side.NORTH);
-            board.setViewingPerspective(Side.NORTH);
+            }
         }
+        board.setViewingPerspective(Side.NORTH);
         checkGameOver();
         if (changed) {
             setChanged();
@@ -340,4 +343,5 @@ public class Model extends Observable {
     public int hashCode() {
         return toString().hashCode();
     }
+
 }

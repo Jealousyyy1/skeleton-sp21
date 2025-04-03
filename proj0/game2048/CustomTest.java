@@ -2,10 +2,9 @@ package game2048;
 
 import java.util.Arrays;
 
-public class testCustom {
+public class CustomTest {
     public static void main(String[] args) {
-        int[] numbers = new int[]{2, 2, 0, 2, 0, 2, 0, 2, 0, 2};
-        System.out.println(Model.numberNonZero(numbers));
+        int[] numbers = new int[]{4, 8, 8, 8};
         System.out.println(Arrays.toString(Model.sameAdjPairs(numbers)));
     }
 }
