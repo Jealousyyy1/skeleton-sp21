@@ -166,12 +166,13 @@ public class Model extends Observable {
             int pair = 0;
             int left = size - 1;
             int right = size - 1;
+            int[] adjPairs = sameAdjPairs(colVal);
             while (right >= size - left_ele) {
                 if (colVal[right] == 0) {
-                    if (sameAdjPairs(colVal)[pair] == right) {
+                    if (adjPairs[pair] == right) {
                         int i = 0;
                         while (i < 2) {
-                            if (colVal[left] != 0) {
+                            if (board.tile(col, left) != null) {
                                 Tile t = board.tile(col, left);
                                 board.move(col, right, t);
                                 colVal[left] = 0;
@@ -202,7 +203,7 @@ public class Model extends Observable {
                         right = right - 1;
                     }
                 } else {
-                    if (sameAdjPairs(colVal)[pair] == right) {
+                    if (adjPairs[pair] == right) {
                         int i = 0;
                         left = left - 1;   // left = 2
                         while (i < 1 && left >= 0) {
