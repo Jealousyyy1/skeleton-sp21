@@ -3,7 +3,7 @@ package SLList;
 import jh61b.junit.In;
 
 public class SLList {
-    public static class IntNode {
+    private static class IntNode {
         public int item;
         public IntNode next;
 
@@ -11,63 +11,64 @@ public class SLList {
             item = i;
             next = n;
         }
-
-        public String toString() {
-            if (next == null) {
-                return String.valueOf(item);
-            } else {
-                return item + " --> " + next.toString();
-            }
-        }
     }
 
-    public IntNode first;
+    private IntNode sentinel;
+    private int size;
+
+    public SLList() {
+        sentinel = new IntNode(0, null);
+        size = 0;
+    }
 
     public SLList(int x) {
-        first = new IntNode(x, null);
+        sentinel = new IntNode(0, new IntNode(x, null));
+        size = 1;
     }
 
     public void addFirst(int x) {
-        first = new IntNode(x, first);
+        sentinel.next = new IntNode(x, sentinel.next);
+        size += 1;
     }
 
     public int getFirst() {
-        return first.item;
+        return sentinel.next.item;
     }
 
+    // size() method w/ O(1) complexity.
     public int size() {
-        IntNode p = first;
-        int size = 0;
-        while (p != null) {
-            p = p.next;
-            size += 1;
-        }
         return size;
     }
 
     public void addEnd(int x) {
-        IntNode p = first;
+
+        IntNode p = sentinel;
         while (p.next != null) {
             p = p.next;
         }
         p.next = new IntNode(x, null);
+        size += 1;
+    }
+
+    private static String toString(IntNode p) {
+        if (p.next == null) {
+            return String.valueOf(p.item);
+        } else {
+            return p.item + " --> " + toString(p.next);
+        }
     }
 
     @Override
     public String toString() {
-        if (first == null) {
-            return "Empty List";
-        } else {
-            return first.toString();
-        }
+        return toString(sentinel.next);
     }
 
     public static void main(String[] args) {
-        SLList lst = new SLList(6);
+        SLList lst = new SLList();
+        lst.addEnd(15);
         lst.addFirst(10);
         lst.addEnd(12);
         System.out.println(lst.toString());
+        System.out.println(lst.size());
     }
-
-
 }
