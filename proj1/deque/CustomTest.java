@@ -36,6 +36,7 @@ public class CustomTest {
         int actual2 = lst1.size();
         assertEquals(expected, actual);
         assertEquals(expectedSize, actual2);
+        System.out.println(lst1.toString());
     }
 
 }

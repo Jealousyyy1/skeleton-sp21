@@ -54,15 +54,16 @@ public class LinkedListDeque {
     }
 
     private String toString(ItemNode items) {
-        if (size == 1) {
-            return items.item
+        if (items.next == null) {
+            return String.valueOf(items.item);
+        } else {
+            return items.item + " <--> " + toString(items.next);
         }
     }
 
+    /** get a "visualized LinkedListDeque. "*/
     public String toString() {
-        if (size == 1) {
-            return
-        }
+        return toString(first.next);
     }
 
     public int size() {
