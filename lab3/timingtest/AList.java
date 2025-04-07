@@ -34,7 +34,7 @@ public class AList<Item> {
     /** Inserts X into the back of the list. */
     public void addLast(Item x) {
         if (size == items.length) {
-            resize(size + 1);
+            resize((int) (size * 1.01));   // modified to a more efficient resize strategy
         }
 
         items[size] = x;
@@ -59,8 +59,8 @@ public class AList<Item> {
       * returns deleted item. */
     public Item removeLast() {
         Item x = getLast();
-        items[size - 1] = null;
-        size = size - 1;
+        items[size - 1] = null; // unlike int type, Item can take up a lot more space.
+        size = size - 1;        // int only 32 bits, and reassign any int to 0 doesn't change this fact.
         return x;
     }
 }
