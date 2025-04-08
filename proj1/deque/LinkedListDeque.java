@@ -2,68 +2,75 @@ package deque;
 
 import net.sf.saxon.om.Item;
 
-public class LinkedListDeque {
-    private static class ItemNode {
-        public int item;
+public class LinkedListDeque<T> {
+    private class ItemNode {
+        public T item;
         public ItemNode prev, next;
-        public ItemNode(int i, ItemNode p, ItemNode n) {
+        public ItemNode(T i, ItemNode p, ItemNode n) {
             this.item = i;
             this.prev = p;
             this.next = n;
         }
     }
 
-    private ItemNode first;
+    private ItemNode sentinel;
     private int size;
 
     /** create an empty LLDeque. */
     public LinkedListDeque() {
-        first = new ItemNode(0, null, null); // arbitrary i.
-        first.next = first;
-        first.prev = first;
+        sentinel = new ItemNode(null, null, null); // arbitrary i.
+        sentinel.next = sentinel;
+        sentinel.prev = sentinel;
         size = 0;
     }
 
     /** create an LLDeque with size 1. */
-    public LinkedListDeque(int i) {
-        first = new ItemNode(0, new ItemNode(i, first, first), null);
-        first.next = first.prev;
+    public LinkedListDeque(T item) {
+        sentinel = new ItemNode(null, new ItemNode(item, null, null), null);
+        sentinel.next = sentinel.prev;
         size = 1;
     }
 
-    public int getFirst() {
-        return first.next.item;
+    public T getFirst() {
+        return sentinel.next.item;
     }
 
-    public int getLast() {
-        return first.prev.item;
+    public T getLast() {
+        return sentinel.prev.item;
     }
 
-    public void addFirst(int i) {
-        ItemNode temp = first.next;
-        first.next = new ItemNode(i, first, temp);
-        first.next.next.prev = first.next;
+    public void addFirst(T item) {
+        ItemNode temp = sentinel.next;
+        sentinel.next = new ItemNode(item, sentinel, temp);
+        temp.prev = sentinel.next;
         size += 1;
     }
 
-    public void addLast(int i) {
-        ItemNode temp = first.prev;
-        first.prev = new ItemNode(i, temp, first);
-        first.prev.prev.next = first.prev;
+    public void addLast(T item) {
+        ItemNode temp = sentinel.prev;
+        sentinel.prev = new ItemNode(item, temp, sentinel);
+        temp.next = sentinel.prev;
         size += 1;
     }
 
-    private String toString(ItemNode items) {
+    public boolean isEmpty() {
+        return size == 0;
+    }
+
+
+
+    private void printDeque(ItemNode items) {
         if (items.next == null) {
-            return String.valueOf(items.item);
+            System.out.println(items.item);
+            System.out.println();
         } else {
-            return items.item + " <--> " + toString(items.next);
+            System.out.print(items.item + " ");
+            printDeque(items.next);
         }
     }
 
-    /** get a "visualized LinkedListDeque. "*/
-    public String toString() {
-        return toString(first.next);
+    public void printDeque() {
+        printDeque(sentinel.next);
     }
 
     public int size() {
