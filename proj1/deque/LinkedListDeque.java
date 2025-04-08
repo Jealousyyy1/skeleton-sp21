@@ -2,6 +2,8 @@ package deque;
 
 import net.sf.saxon.om.Item;
 
+import java.util.Iterator;
+
 public class LinkedListDeque<T> {
     private class ItemNode {
         public T item;
@@ -15,6 +17,7 @@ public class LinkedListDeque<T> {
 
     private ItemNode sentinel;
     private int size;
+    private int index = 0;
 
     /** create an empty LLDeque. */
     public LinkedListDeque() {
@@ -53,11 +56,35 @@ public class LinkedListDeque<T> {
         size += 1;
     }
 
+    public T removeFirst() {
+        if (size == 0) {
+            return null;
+        }
+        ItemNode result = sentinel.next;
+        sentinel.next.prev = new ItemNode(null, null, null);
+        ItemNode temp = sentinel.next.next;
+        sentinel.next = temp;
+        temp.prev = sentinel;
+        size -= 1;
+        return result.item;
+    }
+
+    public T removeLast() {
+        if (size == 0) {
+            return null;
+        }
+        ItemNode result = sentinel.prev;
+        sentinel.prev.next = new ItemNode(null, null, null); // make all references of this node to others than sth in the list.
+        ItemNode temp = sentinel.prev.prev;
+        sentinel.prev = temp;
+        temp.next = sentinel;
+        size -= 1;
+        return result.item;
+    }
+
     public boolean isEmpty() {
         return size == 0;
     }
-
-
 
     private void printDeque(ItemNode items) {
         if (items.next == null) {
@@ -75,5 +102,42 @@ public class LinkedListDeque<T> {
 
     public int size() {
         return size;
+    }
+
+    public T get(int i) {
+        if (i > size || i < 0) {
+            return null;
+        } else {
+            int count = 0;
+            ItemNode p = sentinel.next;
+            while (count < i) {
+                p = p.next;
+                count += 1;
+            }
+            return p.item;
+        }
+    }
+
+    /**
+     * public interface Iterator<T> {
+     *  boolean hasNext();
+        T next();
+     }
+     In order to create an iterator, first implement hasNext() and next() method.
+     */
+    public boolean hasNext() {
+        return index < size;
+    }
+
+    public T next() {
+        if (!hasNext()) {
+            throw new IndexOutOfBoundsException();
+        }
+        index += 1;
+        return get(index);
+    }
+
+    public Iterator<T> iterator() {
+        return new
     }
 }
